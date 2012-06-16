@@ -1,0 +1,6 @@
+#!/usr/bin/perl -n
+
+s/\s/_/g, s/^(\.+)/:\1/, s/_$//, close $fh, open($fh, '>', "articles/$_")
+if s/^\s*\<title\>([^<]+)\<.*$/\1/;
+
+$text &&= !s/\<\/text\>.*$//g, print $fh $_ if $text ||= s/^.*\<text[^>]*\>//;
