@@ -1,5 +1,7 @@
 #!/usr/bin/perl -n
 
+BEGIN {open TITLE_FH, '>', 'article-title-list'}
+
 sub hash {
   local $_;
   my $h = 0;
@@ -8,8 +10,10 @@ sub hash {
   sprintf "%04x", $h & 0xffff;
 }
 
-close $fh, open($fh, '>>', "articles/" . hash(lc $1)),
-print $fh $_ if s/^\s*\<title\>([^<]+)(\<.*)$/<article>\n<title>\1\2/;
+
+close $fh, open($fh, '>>', 'articles/' . hash(lc $1)),
+(print TITLE_FH $1, "\n"), print $fh $_
+if s/^\s*\<title\>([^<]+)(<.*)$/<article>\n<title>\1\2/;
 
 print $fh $_ if /^\s*\<timestamp\>/;
 
