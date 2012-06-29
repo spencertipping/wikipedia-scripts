@@ -4,11 +4,12 @@ sub hash {
   local $_;
   my $h = 0;
   $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
-  sprintf "%05x", $h & 0xffff;
+  printf STDERR "%s -> %04x\n", $_[0], $h & 0xffff;
+  sprintf "%04x", $h & 0xffff;
 }
 
-s/\h/_/g, s/_$//, close $fh, open($fh, '>>', "articles/" . hash($_)),
-print $fh $_ if s/^\s*(\<title\>[^<]+\<.*)$/<article>\n\1/;
+close $fh, open($fh, '>>', "articles/" . hash(lc $1)),
+print $fh $_ if s/^\s*\<title\>([^<]+)(\<.*)$/<article>\n<title>\1\2/;
 
 print $fh $_ if /^\s*\<timestamp\>/;
 

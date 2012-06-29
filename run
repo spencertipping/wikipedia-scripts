@@ -1,2 +1,6 @@
 #!/bin/bash
-cat enwiki-latest-pages-articles.xml.bz2.* | bunzip2 | ./paginate
+if [[ $1 == '-d' ]]; then
+  cat enwiki-latest-pages-articles.xml.bz2.* | bunzip2 | less
+else
+  cat enwiki-latest-pages-articles.xml.bz2.* | bunzip2 | ./paginate
+fi
