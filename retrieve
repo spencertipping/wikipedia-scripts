@@ -1,6 +1,8 @@
 #!/usr/bin/perl
 # Usage: retrieve <article title>
 
+my $article_path = "$ENV{HOME}/transition/wikipedia/articles";
+
 sub hash {
   local $_;
   my $h = 0;
@@ -9,7 +11,8 @@ sub hash {
 }
 
 my $title = lc join ' ', @ARGV;
-open my($segment), '<', 'articles/' . hash($title);
+my $hash  = hash($title);
+open my($segment), '<', "$article_path/$hash";
 
 my $correct_article = 0;
 my $text_part       = 0;
