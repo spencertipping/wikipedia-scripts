@@ -1,6 +1,16 @@
 #!/usr/bin/perl -n
 
-s/\s/_/g, s/^(\.+)/:\1/, s/_$//, close $fh, open($fh, '>', "articles/$_")
-if s/^\s*\<title\>([^<]+)\<.*$/\1/;
+sub hash {
+  local $_;
+  my $h = 0;
+  $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
+  sprintf "%05x", $h & 0xffff;
+}
 
-$text &&= !s/\<\/text\>.*$//g, print $fh $_ if $text ||= s/^.*\<text[^>]*\>//;
+s/\h/_/g, s/_$//, close $fh, open($fh, '>>', "articles/" . hash($_)),
+print $fh $_ if s/^\s*(\<title\>[^<]+\<.*)$/<article>\n\1/;
+
+print $fh $_ if /^\s*\<timestamp\>/;
+
+$text &&= !s/(\<\/text\>.*)$/\1\n<\/article>/g, print $fh $_
+if $text ||= s/^(.*\<text[^>]*\>)/\1\n/;

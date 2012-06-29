@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+# Usage: retrieve <article title>
+
+sub hash {
+  local $_;
+  my $h = 0;
+  $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
+  sprintf "%05x", $h & 0xffff;
+}
+
+sub canonicalize_title {
+  my ($title) = @_;
+  $title =~ s/\h/_/g,
+  $title =~ s/_$//;
+  $title;
+}
+
+my $title = canonicalize_title(join '_', @ARGV);
+open my($segment), '<', 'articles/' . hash($title);
+
+my $correct_article = 0;
+my $text_part       = 0;
+while (<$segment>) {
+  $correct_article = $title eq canonicalize_title($1)
+  if /^\s*<title>([^>]+)<\/title>/;
+
+  print if $correct_article and $text_part ||= s/^\s*<text>//;
+  print, last if $correct_article and s/<\/text>\s*$//;
+}

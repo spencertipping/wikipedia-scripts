@@ -1,0 +1,2 @@
+#!/bin/bash
+cat enwiki-latest-pages-articles.xml.bz2.* | bunzip2 | ./paginate
