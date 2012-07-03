@@ -12,16 +12,20 @@ sub hash {
 
 my $title = lc join ' ', @ARGV;
 my $hash  = hash($title);
+print STDERR "using $article_path/$hash\n";
+
 open my($segment), '<', "$article_path/$hash";
 
 my $correct_article = 0;
 my $text_part       = 0;
 
 while (<$segment>) {
-  $correct_article = $title eq lc $1 if /^\s*<title>([^>]+)<\/title>/;
+  $correct_article = $title eq lc $1 or print STDERR "."
+  if /^\s*<title>([^>]+)<\/title>/;
 
-  print if $correct_article and $text_part ||= s/^\s*<text[^>]*>//;
-  print, last if $correct_article and s/<\/text>\s*$//;
+  print, $text_part &&= !s/<\/text>.*$//
+  if $correct_article and $text_part ||= s/^\s*<text[^>]*>//;
 }
 
+print STDERR "\n";
 close $segment;
