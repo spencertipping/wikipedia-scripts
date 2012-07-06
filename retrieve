@@ -14,7 +14,7 @@ my $title = lc join ' ', @ARGV;
 my $hash  = hash($title);
 print STDERR "using $article_path/$hash\n";
 
-open my($segment), '<', "$article_path/$hash";
+open my($segment), "bzcat $article_path/$hash.bz2 |";
 
 my $correct_article = 0;
 my $text_part       = 0;

@@ -1,0 +1,25 @@
+#!/bin/bash
+# Benchmarks various compression algorithms on randomly-selected articles
+
+article_name=articles/$(random-line article-ls)
+echo using $article_name
+
+cp $article_name testdata && echo lzop  && time lzop  --best testdata
+cp $article_name testdata && echo gzip  && time gzip  --best testdata
+cp $article_name testdata && echo bzip2 && time bzip2 --best testdata
+cp $article_name testdata && echo xz    && time xz     -6e   testdata
+
+original_size=$(wc -c $article_name | awk '{print $1}')
+lzop_size=$(wc -c testdata.lzo | awk '{print $1}')
+gzip_size=$(wc -c testdata.gz | awk '{print $1}')
+bzip2_size=$(wc -c testdata.bz2 | awk '{print $1}')
+xz_size=$(wc -c testdata.xz | awk '{print $1}')
+
+echo sizes
+echo "original: $original_size"
+echo "lzop:     $lzop_size ($((lzop_size  * 100 / original_size))%)"
+echo "gzip:     $gzip_size ($((gzip_size  * 100 / original_size))%)"
+echo "bzip2:    $bzip2_size ($((bzip2_size * 100 / original_size))%)"
+echo "xz:       $xz_size ($((xz_size    * 100 / original_size))%)"
+
+rm testdata.{lzo,gz,bz2,xz}
