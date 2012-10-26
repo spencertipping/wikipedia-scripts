@@ -7,20 +7,20 @@ sub hash {
   local $_;
   my $h = 0;
   $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
-  sprintf "%04x", $h & 0xffff;
+  substr sprintf("%04x", $h & 0xffff), 0, 3;
 }
 
 my $title = lc join ' ', @ARGV;
 my $hash  = hash($title);
 print STDERR "using $article_path/$hash\n";
 
-open my($segment), "bzcat $article_path/$hash.bz2 |";
+open my($segment), "xz -dc $article_path/$hash.xz |";
 
 my $correct_article = 0;
 my $text_part       = 0;
 
 while (<$segment>) {
-  $correct_article = $title eq lc $1 or print STDERR "."
+  $correct_article = $title eq lc $1
   if /^\s*<title>([^>]+)<\/title>/;
 
   print, $text_part &&= !s/<\/text>.*$//
