@@ -7,9 +7,8 @@ sub hash {
   my $h = 0;
   $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
   printf STDERR "%s -> %04x\n", $_[0], $h & 0xffff;
-  sprintf "%04x", $h & 0xffff;
+  sprintf "%03x", $h & 0xfff;
 }
-
 
 close $fh, open($fh, '>>', 'articles/' . hash(lc $1)),
 (print TITLE_FH $1, "\n"), print $fh $_

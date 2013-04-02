@@ -7,7 +7,7 @@ sub hash {
   local $_;
   my $h = 0;
   $h *= 5, $h ^= $_, $h &= 0xffffff for unpack 'U*', $_[0];
-  substr sprintf("%04x", $h & 0xffff), 0, 3;
+  sprintf("%03x", $h & 0xfff);
 }
 
 my $title = lc join ' ', @ARGV;
